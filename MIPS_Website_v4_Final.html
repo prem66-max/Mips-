@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern International Public School</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d2461;--blue:#1565c0;--gold:#f5b800;--gold2:#ffe066;
+  --cream:#f8fbff;--white:#fff;--muted:#5a6a8a;--light:#e8f0fe;
+  --green:#1b5e20;--red:#b71c1c;--border:#90b3e8;
+  --shadow:0 8px 40px rgba(13,36,97,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:#1a2340;}
+
+/* ── LOGIN SCREENS ── */
+.login-screen{display:none;position:fixed;inset:0;z-index:2000;background:linear-gradient(135deg,#0d2461 0%,#1565c0 60%,#1976d2 100%);align-items:center;justify-content:center;flex-direction:column;}
+.login-screen.active{display:flex;}
+.login-box{background:white;border-radius:16px;padding:44px 40px;width:90%;max-width:420px;box-shadow:0 24px 80px rgba(0,0,0,0.35);animation:popIn 0.4s ease;}
+@keyframes popIn{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-emblem{width:68px;height:68px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);border:3px solid var(--gold2);margin:0 auto 12px;}
+.login-logo h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);}
+.login-logo p{font-size:12px;color:var(--muted);margin-top:3px;}
+.login-tabs{display:flex;gap:0;margin-bottom:24px;border:2px solid var(--border);border-radius:8px;overflow:hidden;}
+.login-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;background:white;color:var(--muted);transition:all 0.2s;}
+.login-tab.active{background:var(--navy);color:var(--gold2);}
+.login-field{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.login-field label{font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);}
+.login-field input{border:1.5px solid var(--border);border-radius:6px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:15px;background:#f5f8ff;}
+.login-field input:focus{outline:none;border-color:var(--gold);background:white;}
+.btn-login{width:100%;background:var(--navy);color:var(--gold2);border:none;padding:14px;font-family:'Playfair Display',serif;font-size:15px;letter-spacing:1px;border-radius:6px;cursor:pointer;margin-top:8px;transition:all 0.2s;}
+.btn-login:hover{background:var(--blue);}
+.login-err{color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;}
+.login-switch{text-align:center;margin-top:16px;font-size:13px;color:var(--muted);}
+.login-switch a{color:var(--blue);cursor:pointer;font-weight:600;}
+
+/* ── ADMIN DASHBOARD ── */
+.admin-screen{display:none;min-height:100vh;background:#f0f4ff;}
+.admin-screen.active{display:block;}
+.admin-nav{background:var(--navy);padding:0 24px;display:flex;align-items:center;gap:16px;}
+.admin-nav-logo{font-family:'Playfair Display',serif;color:var(--gold2);font-size:16px;padding:14px 0;flex:1;}
+.admin-nav-logo small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:1.5px;text-transform:uppercase;}
+.admin-logout{background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.3);padding:8px 16px;border-radius:4px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;}
+.admin-logout:hover{background:var(--red);border-color:var(--red);}
+.admin-body{max-width:1100px;margin:0 auto;padding:28px 20px;}
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:white;border-radius:10px;padding:20px 22px;border-left:5px solid;box-shadow:var(--shadow);}
+.stat-card.blue{border-color:var(--blue);}
+.stat-card.gold{border-color:var(--gold);}
+.stat-card.green{border-color:#2e7d32;}
+.stat-card.red{border-color:var(--red);}
+.stat-card .num{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--navy);}
+.stat-card .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.admin-tabs{display:flex;gap:0;margin-bottom:20px;background:white;border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
+.admin-tab{flex:1;padding:13px;text-align:center;font-weight:600;font-size:13px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;transition:all 0.2s;}
+.admin-tab.active{color:var(--navy);border-color:var(--gold);background:#fffbf0;}
+.admin-panel{display:none;}
+.admin-panel.active{display:block;}
+.data-table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);}
+.data-table thead tr{background:var(--navy);color:var(--gold2);}
+.data-table thead th{padding:12px 14px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-align:left;}
+.data-table tbody tr:nth-child(even){background:#f5f8ff;}
+.data-table tbody tr:hover{background:#e8f0fe;}
+.data-table tbody td{padding:11px 14px;font-size:13.5px;border-bottom:1px solid #e0e8ff;}
+.badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:12px;text-transform:uppercase;letter-spacing:1px;}
+.badge-new{background:#dbeafe;color:#1e40af;}
+.badge-pending{background:#fef9c3;color:#854d0e;}
+.badge-done{background:#dcfce7;color:#166534;}
+.badge-tc{background:#fce7f3;color:#9d174d;}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty-state .icon{font-size:48px;margin-bottom:12px;}
+.notif-item{background:white;border-radius:8px;padding:16px 18px;margin-bottom:10px;border-left:4px solid var(--gold);box-shadow:0 2px 8px rgba(0,0,0,0.07);display:flex;justify-content:space-between;align-items:flex-start;}
+.notif-item.tc{border-color:#ec4899;}
+.notif-item.gate{border-color:#0ea5e9;}
+.notif-item.feedback{border-color:#10b981;}
+.notif-info h4{font-weight:600;font-size:14px;color:var(--navy);}
+.notif-info p{font-size:12px;color:var(--muted);margin-top:3px;}
+.notif-time{font-size:11px;color:var(--muted);flex-shrink:0;margin-left:12px;}
+.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.search-bar input{flex:1;min-width:200px;border:1.5px solid var(--border);border-radius:6px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:14px;}
+.search-bar select{border:1.5px solid var(--border);border-radius:6px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:14px;}
+
+/* ── MAIN SITE ── */
+.main-site{display:none;}
+.main-site.active{display:block;}
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);display:flex;align-items:center;padding:0 20px;box-shadow:0 2px 20px rgba(0,0,0,0.35);}
+.nav-logo{display:flex;align-items:center;gap:10px;padding:10px 0;}
+.nav-emblem{width:44px;height:44px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--navy);border:2px solid var(--gold2);flex-shrink:0;}
+.nav-title{font-family:'Playfair Display',serif;color:var(--gold2);font-size:14px;line-height:1.2;}
+.nav-title small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.5);font-weight:300;letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap;}
+.nav-links button{background:transparent;border:none;color:rgba(255,255,255,0.8);padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;border-radius:4px;transition:all 0.2s;font-weight:500;}
+.nav-links button:hover,.nav-links button.active{background:var(--gold);color:var(--navy);font-weight:700;}
+.nav-user{display:flex;align-items:center;gap:8px;color:var(--gold2);font-size:12px;margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,255,255,0.2);}
+.nav-user-icon{width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer;}
+.btn-signout{background:transparent;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:5px 10px;border-radius:4px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-signout:hover{background:var(--red);border-color:var(--red);color:white;}
+
+/* ── PAGES ── */
+.page{display:none;animation:fadeIn 0.3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 60%,#1976d2 100%);color:white;padding:0;position:relative;overflow:hidden;}
+.obj3d{position:absolute;animation:float3d 4s ease-in-out infinite;}
+@keyframes float3d{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(8deg);}}
+.hero-content{position:relative;z-index:2;padding:60px 40px 50px;text-align:center;}
+.hero-badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:5px 18px;border-radius:20px;margin-bottom:18px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);line-height:1.15;margin-bottom:14px;}
+.hero h1 span{color:var(--gold2);}
+.hero p{font-size:15px;opacity:0.8;max-width:540px;margin:0 auto 28px;line-height:1.7;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:var(--gold);color:var(--navy);font-weight:700;padding:13px 28px;border-radius:4px;font-size:14px;border:none;cursor:pointer;letter-spacing:0.5px;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-1px);}
+.btn-outline{background:transparent;color:white;border:2px solid rgba(255,255,255,0.4);padding:13px 28px;border-radius:4px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+
+.stats{background:var(--white);padding:28px 40px;display:flex;justify-content:center;gap:50px;border-bottom:3px solid var(--light);flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:32px;color:var(--navy);font-weight:700;}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+
+.section-wrap{padding:50px 30px;max-width:1100px;margin:0 auto;}
+.section-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);text-align:center;margin-bottom:6px;}
+.section-sub{text-align:center;color:var(--muted);margin-bottom:36px;font-size:14px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;}
+.card{background:white;border:1.5px solid #d0dff8;border-radius:10px;padding:24px 20px;transition:all 0.25s;cursor:pointer;}
+.card:hover{border-color:var(--gold);box-shadow:0 4px 24px rgba(21,101,192,0.15);transform:translateY(-3px);}
+.card-icon{font-size:34px;margin-bottom:12px;}
+.card h3{font-family:'Playfair Display',serif;font-size:16px;color:var(--navy);margin-bottom:6px;}
+.card p{font-size:13px;color:var(--muted);line-height:1.6;}
+
+.principal-section{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);padding:50px 30px;color:white;}
+.principal-inner{max-width:950px;margin:0 auto;display:flex;gap:40px;align-items:center;flex-wrap:wrap;}
+.principal-photo-wrap{position:relative;flex-shrink:0;}
+.principal-photo{width:160px;height:160px;border-radius:50%;object-fit:cover;object-position:top;border:5px solid var(--gold);box-shadow:0 0 0 8px rgba(245,184,0,0.25),0 12px 40px rgba(0,0,0,0.4);}
+.principal-badge{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:4px 12px;border-radius:12px;white-space:nowrap;letter-spacing:1px;}
+.vp-card{display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0;}
+.vp-photo{width:130px;height:130px;border-radius:50%;object-fit:cover;object-position:top;border:4px solid rgba(255,255,255,0.4);box-shadow:0 0 0 6px rgba(255,255,255,0.1),0 8px 30px rgba(0,0,0,0.4);}
+.vp-badge{background:rgba(255,255,255,0.15);color:var(--gold2);font-size:10px;font-weight:700;padding:4px 12px;border-radius:12px;letter-spacing:1px;border:1px solid rgba(255,255,255,0.25);}
+.principal-info{flex:1;min-width:250px;}
+.principal-info h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);margin-bottom:10px;}
+.principal-info p{font-size:14px;opacity:0.82;line-height:1.8;margin-bottom:12px;}
+.contact-item{display:flex;align-items:center;gap:8px;font-size:13px;opacity:0.9;margin-bottom:5px;}
+.contact-item span{background:rgba(255,255,255,0.12);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+
+.page-header{background:var(--navy);color:white;padding:32px 30px;border-bottom:4px solid var(--gold);}
+.page-header h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);}
+.page-header p{font-size:13px;opacity:0.6;margin-top:4px;}
+
+.form-wrap{max-width:860px;margin:36px auto;padding:0 20px 50px;}
+.form-card{background:white;border:1.5px solid #d0dff8;border-radius:10px;padding:32px;box-shadow:var(--shadow);}
+.sec-head{background:var(--navy);color:var(--gold2);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;border-left:5px solid var(--gold);margin:26px 0 16px;}
+.form-row{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+.form-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:160px;}
+.form-group label{font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);}
+.form-group input,.form-group select,.form-group textarea{border:1.5px solid #c5d5f0;border-radius:4px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:14px;background:#f5f8ff;color:#1a2340;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);background:white;}
+.form-group textarea{resize:vertical;min-height:75px;}
+
+.fee-wrap{max-width:1000px;margin:36px auto;padding:0 20px 50px;}
+.fee-card{background:white;border-radius:10px;box-shadow:var(--shadow);overflow:hidden;}
+.fee-filter{padding:20px 24px;background:var(--light);border-bottom:2px solid var(--border);display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.fee-filter label{font-size:13px;font-weight:600;color:var(--navy);}
+.fee-filter select{border:1.5px solid var(--border);border-radius:4px;padding:8px 14px;font-family:'DM Sans',sans-serif;font-size:14px;background:white;}
+.fee-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.fee-table thead tr{background:var(--navy);color:var(--gold2);}
+.fee-table thead th{padding:11px 14px;font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase;text-align:left;border:1px solid #1a3a8f;}
+.fee-table tbody tr:nth-child(even){background:#f0f5ff;}
+.fee-table tbody tr:hover{background:#e0ecff;}
+.fee-table tbody td{padding:10px 14px;border:1px solid #d0dff8;}
+.badge-a{background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;}
+.badge-o{background:#fef9c3;color:#854d0e;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;}
+
+.pay-wrap{max-width:680px;margin:36px auto;padding:0 20px 50px;}
+.pay-card{background:white;border-radius:10px;box-shadow:var(--shadow);overflow:hidden;}
+.pay-header{background:var(--navy);padding:22px 26px;}
+.pay-header h3{font-family:'Playfair Display',serif;color:var(--gold2);font-size:20px;}
+.pay-header p{color:rgba(255,255,255,0.55);font-size:13px;margin-top:4px;}
+.pay-body{padding:28px;}
+.pay-amount-box{background:var(--light);border:2px solid var(--border);border-radius:8px;padding:18px 22px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
+.pay-amount-box .label{font-size:13px;color:var(--muted);}
+.pay-amount-box .amount{font-family:'Playfair Display',serif;font-size:30px;color:var(--navy);font-weight:700;}
+.pay-methods{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap;}
+.pay-method{flex:1;min-width:90px;border:2px solid #c5d5f0;border-radius:6px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:12px;font-weight:500;background:white;}
+.pay-method:hover,.pay-method.selected{border-color:var(--gold);background:#fffbf0;color:var(--navy);}
+.pay-method .icon{font-size:22px;display:block;margin-bottom:4px;}
+.btn-pay{width:100%;background:var(--green);color:white;border:none;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;border-radius:6px;cursor:pointer;transition:all 0.2s;margin-top:18px;}
+.btn-pay:hover{background:#155724;}
+.secure-badge{text-align:center;font-size:11px;color:var(--muted);margin-top:10px;}
+
+.gate-wrap{max-width:860px;margin:36px auto;padding:0 20px 50px;}
+.gate-tabs{display:flex;}
+.gate-tab{flex:1;padding:13px;text-align:center;background:var(--light);border:2px solid var(--border);cursor:pointer;font-weight:600;font-size:13px;transition:all 0.2s;color:var(--muted);}
+.gate-tab:first-child{border-radius:8px 0 0 0;}
+.gate-tab:last-child{border-radius:0 8px 0 0;}
+.gate-tab.active{background:var(--navy);color:var(--gold2);border-color:var(--navy);}
+.gate-panel{display:none;background:white;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:28px;}
+.gate-panel.active{display:block;}
+.pass-list{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.pass-item{border:1.5px solid #d0dff8;border-radius:6px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;background:#f5f8ff;}
+.pass-info h4{font-weight:600;font-size:14px;color:var(--navy);}
+.pass-info p{font-size:12px;color:var(--muted);margin-top:2px;}
+.pass-status{display:flex;gap:8px;align-items:center;}
+.status-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;text-transform:uppercase;letter-spacing:1px;}
+.status-pending{background:#fef9c3;color:#854d0e;}
+.status-approved{background:#dcfce7;color:#166534;}
+.status-cancelled{background:#fee2e2;color:#b71c1c;}
+.btn-cancel{background:#fee2e2;color:var(--red);border:1.5px solid #fca5a5;padding:6px 14px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+.feedback-wrap{max-width:820px;margin:36px auto;padding:0 20px 50px;}
+.tc-notice{background:#fffbeb;border:2px solid #fbbf24;border-radius:8px;padding:16px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start;}
+.tc-notice span{font-size:20px;}
+.tc-notice p{font-size:13px;color:#78350f;line-height:1.6;}
+.rating-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:8px;}
+.rating-table thead tr{background:var(--navy);color:var(--gold2);}
+.rating-table thead th{padding:10px 12px;font-size:11px;font-weight:600;text-align:center;border:1px solid #1a3a8f;}
+.rating-table thead th:first-child{text-align:left;}
+.rating-table tbody tr:nth-child(even){background:#f0f5ff;}
+.rating-table tbody td{padding:9px 12px;border:1px solid #d0dff8;vertical-align:middle;}
+.rating-table tbody td.c{text-align:center;}
+.rating-table input[type="radio"]{accent-color:var(--gold);width:15px;height:15px;cursor:pointer;}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:white;border-radius:14px;padding:44px 36px;text-align:center;max-width:400px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,0.35);animation:popIn 0.3s ease;}
+.modal-icon{font-size:52px;margin-bottom:14px;}
+.modal-box h3{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy);margin-bottom:8px;}
+.modal-box p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:20px;}
+.modal-ref{background:var(--light);border:1.5px solid var(--border);border-radius:6px;padding:10px 18px;font-size:13px;color:var(--navy);font-weight:600;margin-bottom:18px;}
+.btn-close-modal{background:var(--navy);color:var(--gold2);border:none;padding:11px 30px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-submit{background:var(--navy);color:var(--gold2);border:2px solid var(--gold);padding:12px 34px;font-family:'Playfair Display',serif;font-size:15px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.2s;margin-top:20px;}
+.btn-submit:hover{background:var(--gold);color:var(--navy);}
+.footer{background:var(--navy);color:rgba(255,255,255,0.45);text-align:center;padding:22px;font-size:12px;letter-spacing:0.8px;}
+.footer strong{color:var(--gold2);}
+.footer a{color:var(--gold2);text-decoration:none;}
+
+/* SMS TOAST */
+.sms-toast{position:fixed;bottom:24px;right:24px;background:#1b5e20;color:white;padding:14px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;display:none;animation:slideUp 0.3s ease;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+.sms-toast.show{display:block;}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+@media(max-width:600px){
+  .nav-links button{font-size:10px;padding:7px 6px;}
+  .stats{gap:24px;padding:20px;}
+  .hero-content{padding:40px 18px;}
+  .principal-inner{flex-direction:column;text-align:center;}
+  .admin-tabs{flex-wrap:wrap;}
+  .admin-tab{min-width:100px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ LOGIN SCREEN ══════ -->
+<div class="login-screen active" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-emblem">MIPS</div>
+      <h2>Modern International Public School</h2>
+      <p>Laukaha, Madhubani, Bihar — 847421</p>
+    </div>
+    <div class="login-tabs">
+      <div class="login-tab active" onclick="switchLoginTab('parent',this)">👨‍👩‍👧 Parent / Student</div>
+      <div class="login-tab" onclick="switchLoginTab('staff',this)">🏫 School Staff</div>
+    </div>
+
+    <!-- PARENT LOGIN -->
+    <div id="parent-login">
+      <div id="parent-signin">
+        <div class="login-field"><label>Mobile Number</label><input type="text" id="p-phone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="login-field"><label>Password</label><input type="password" id="p-pass" placeholder="Enter password"></div>
+        <button class="btn-login" onclick="parentLogin()">Sign In →</button>
+        <div class="login-err" id="p-err">❌ Invalid mobile or password</div>
+        <div class="login-switch">New user? <a onclick="showRegister()">Create Account</a></div>
+      </div>
+      <div id="parent-register" style="display:none;">
+        <div class="login-field"><label>Full Name *</label><input type="text" id="r-name" placeholder="Parent / Guardian Name"></div>
+        <div class="login-field"><label>Mobile Number *</label><input type="text" id="r-phone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="login-field"><label>Create Password *</label><input type="password" id="r-pass" placeholder="Min 6 characters"></div>
+        <div class="login-field"><label>Student Name</label><input type="text" id="r-student" placeholder="Ward's name"></div>
+        <button class="btn-login" onclick="registerParent()">Create Account →</button>
+        <div class="login-err" id="r-err">❌ Mobile already registered or fields empty</div>
+        <div class="login-switch">Already registered? <a onclick="showSignin()">Sign In</a></div>
+      </div>
+    </div>
+
+    <!-- STAFF LOGIN -->
+    <div id="staff-login" style="display:none;">
+      <div class="login-field"><label>Username</label><input type="text" id="s-user" placeholder="Staff Username"></div>
+      <div class="login-field"><label>Password</label><input type="password" id="s-pass" placeholder="Staff Password"></div>
+      <button class="btn-login" onclick="staffLogin()">Staff Login →</button>
+      <div class="login-err" id="s-err">❌ Invalid username or password</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ADMIN DASHBOARD ══════ -->
+<div class="admin-screen" id="adminScreen">
+  <div class="admin-nav">
+    <div class="admin-nav-logo">🏫 MIPS Admin Panel<small>School Management Dashboard</small></div>
+    <button class="admin-logout" onclick="adminLogout()">🚪 Logout</button>
+  </div>
+  <div class="admin-body">
+    <div class="admin-stats">
+      <div class="stat-card blue"><div class="num" id="stat-adm">0</div><div class="lbl">📋 Admissions</div></div>
+      <div class="stat-card gold"><div class="num" id="stat-tc">0</div><div class="lbl">📄 TC Requests</div></div>
+      <div class="stat-card green"><div class="num" id="stat-gate">0</div><div class="lbl">🚪 Gate Passes</div></div>
+      <div class="stat-card red"><div class="num" id="stat-fb">0</div><div class="lbl">📝 Feedback</div></div>
+    </div>
+
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="switchAdminTab('notif',this)">🔔 All Notifications</div>
+      <div class="admin-tab" onclick="switchAdminTab('admissions',this)">📋 Admissions</div>
+      <div class="admin-tab" onclick="switchAdminTab('tc',this)">📄 TC Requests</div>
+      <div class="admin-tab" onclick="switchAdminTab('gate',this)">🚪 Gate Passes</div>
+      <div class="admin-tab" onclick="switchAdminTab('feedback',this)">📝 Feedback</div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="panel-notif" class="admin-panel active">
+      <div id="notif-list">
+        <div class="empty-state"><div class="icon">🔔</div><p>Koi notification nahi abhi tak.</p></div>
+      </div>
+    </div>
+
+    <!-- ADMISSIONS -->
+    <div id="panel-admissions" class="admin-panel">
+      <div class="search-bar">
+        <input type="text" placeholder="Search by name, class, mobile..." onkeyup="filterTable('adm-tbody',this.value)" id="adm-search">
+        <select onchange="filterTable('adm-tbody',document.getElementById('adm-search').value,this.value)">
+          <option value="">All Classes</option>
+          <option>Nursery</option><option>LKG</option><option>UKG</option>
+          <option>Class I</option><option>Class II</option><option>Class III</option>
+          <option>Class IV</option><option>Class V</option><option>Class VI</option>
+          <option>Class VII</option><option>Class VIII</option>
+          <option>Class IX</option><option>Class X</option>
+        </select>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Student Name</th><th>Class</th><th>Parent Name</th><th>Mobile</th><th>Date/Time</th><th>Status</th></tr></thead>
+        <tbody id="adm-tbody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Koi admission application nahi mila.</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- TC -->
+    <div id="panel-tc" class="admin-panel">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Student Name</th><th>Class</th><th>Parent Name</th><th>Mobile</th><th>Reason</th><th>Date/Time</th></tr></thead>
+        <tbody id="tc-tbody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Koi TC request nahi mila.</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- GATE -->
+    <div id="panel-gate" class="admin-panel">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Student Name</th><th>Class</th><th>Parent Name</th><th>Mobile</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="gate-tbody"><tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted);">Koi gate pass request nahi mila.</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div id="panel-feedback" class="admin-panel">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Parent Name</th><th>Student</th><th>Class</th><th>Mobile</th><th>Rating</th><th>Date/Time</th></tr></thead>
+        <tbody id="fb-tbody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Koi feedback nahi mila.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MAIN WEBSITE ══════ -->
+<div class="main-site" id="mainSite">
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-emblem">MIPS</div>
+    <div class="nav-title">Modern International Public School<small>Laukaha, Madhubani · CBSE</small></div>
+  </div>
+  <div class="nav-links">
+    <button class="active" onclick="showPage('home',this)">🏠 Home</button>
+    <button onclick="showPage('admission',this)">📋 Admission</button>
+    <button onclick="showPage('fees',this)">💰 Fees</button>
+    <button onclick="showPage('payment',this)">💳 Payment</button>
+    <button onclick="showPage('gatepass',this)">🚪 Gate Pass</button>
+    <button onclick="showPage('feedback',this)">📝 Feedback/TC</button>
+  </div>
+  <div class="nav-user">
+    <div class="nav-user-icon" id="userIcon">U</div>
+    <span id="userName" style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+    <button class="btn-signout" onclick="userLogout()">Sign Out</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="hero">
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+      <div class="obj3d" style="position:absolute;bottom:15%;left:4%;animation-delay:0s;">
+        <svg width="80" height="90" viewBox="0 0 80 90"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1565c0"/><stop offset="100%" style="stop-color:#0d47a1"/></linearGradient></defs><ellipse cx="40" cy="87" rx="28" ry="5" fill="rgba(0,0,0,0.25)"/><rect x="22" y="10" width="8" height="25" rx="4" fill="#0d47a1" opacity="0.9"/><rect x="50" y="10" width="8" height="25" rx="4" fill="#0d47a1" opacity="0.9"/><rect x="8" y="28" width="64" height="55" rx="10" fill="url(#bg)"/><rect x="16" y="50" width="48" height="26" rx="6" fill="#0a3a82"/><line x1="16" y1="50" x2="64" y2="50" stroke="#90caf9" stroke-width="2" stroke-dasharray="4,3"/><circle cx="40" cy="50" r="3" fill="#f5b800"/><path d="M30,28 Q40,15 50,28" fill="none" stroke="#1976d2" stroke-width="5" stroke-linecap="round"/><text x="35" y="44" font-size="14" fill="#f5b800" text-anchor="middle">★</text></svg>
+      </div>
+      <div class="obj3d" style="position:absolute;top:12%;right:7%;animation-delay:1s;width:20px;height:120px;"><div style="width:100%;height:10%;background:#ff8fa3;border-radius:3px 3px 0 0;"></div><div style="width:100%;height:5%;background:#c0392b;"></div><div style="width:100%;height:70%;background:linear-gradient(to right,#ffe066,#f5b800,#e6ac00);box-shadow:4px 4px 10px rgba(0,0,0,0.4);"></div><div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:22px solid #ffcc02;"></div></div>
+      <div class="obj3d" style="position:absolute;top:8%;left:10%;animation-delay:0.5s;width:15px;height:130px;transform:rotate(20deg);"><div style="width:100%;height:12%;background:#ffb300;border-radius:3px 3px 0 0;"></div><div style="width:100%;height:72%;background:linear-gradient(to right,#283593,#1a237e);box-shadow:4px 4px 10px rgba(0,0,0,0.5);"></div><div style="width:0;height:0;border-left:7.5px solid transparent;border-right:7.5px solid transparent;border-top:22px solid #3949ab;"></div></div>
+      <div style="position:absolute;top:20%;right:20%;font-size:28px;animation:float3d 3s ease-in-out infinite;animation-delay:0.3s;">⭐</div>
+      <div style="position:absolute;top:70%;left:35%;font-size:20px;animation:float3d 4s ease-in-out infinite;animation-delay:1.2s;opacity:0.7;">✨</div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">✦ CBSE Affiliated · Nursery to Class X</div>
+      <h1>Nurturing Excellence,<br><span>Shaping Futures</span></h1>
+      <p>Modern International Public School — quality education with holistic development. Admissions Open 2026–27!</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('admission',document.querySelectorAll('.nav-links button')[1])">Apply for Admission 2026–27 →</button>
+        <button class="btn-outline" onclick="showPage('fees',document.querySelectorAll('.nav-links button')[2])">View Fee Structure</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">1,200+</div><div class="stat-label">Students Enrolled</div></div>
+    <div class="stat"><div class="stat-num">95%</div><div class="stat-label">Board Pass Rate</div></div>
+    <div class="stat"><div class="stat-num">80+</div><div class="stat-label">Trained Faculty</div></div>
+    <div class="stat"><div class="stat-num">Nursery–X</div><div class="stat-label">Classes Offered</div></div>
+  </div>
+  <div class="principal-section">
+    <div class="principal-inner">
+      <div class="principal-photo-wrap">
+        <img class="principal-photo" src="data:image/jpeg;base64,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" alt="Principal">
+        <div class="principal-badge">🎓 Principal</div>
+      </div>
+      <div class="principal-info">
+        <h2>Message from the Principal</h2>
+        <p>Welcome to Modern International Public School, Laukaha, Madhubani. We are committed to providing quality CBSE education along with holistic development of every student — nurturing academic excellence, strong values, and creativity in every child.</p>
+        <p>We warmly invite you to join the MIPS family for 2026–27.</p>
+        <div class="contact-item"><span>📞</span> +91 7781933006</div>
+        <div class="contact-item"><span>📍</span> Laukaha, Madhubani, Bihar — 847421</div>
+      </div>
+      <div class="vp-card">
+        <img class="vp-photo" src="vp.jpg" alt="Vice Principal">
+        <div class="vp-badge">🎓 Vice Principal</div>
+        
+        
+    <!-- TOPPER SECTION -->
+<div style="text-align:center; margin-top:20px;">
+
+  <div style="position:relative; width:180px; height:180px; margin:auto;">
+
+    <!-- Circle Text -->
+    <svg viewBox="0 0 180 180" style="position:absolute; top:0; left:0;">
+      <defs>
+        <path id="circle"
+          d="M90,90 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/>
+      </defs>
+
+      <text fill="#00FFFF" font-size="12" font-weight="bold" letter-spacing="1">
+  <textPath href="#circle" startOffset="25%" text-anchor="middle">
+    ★ TOPPER OF THE SCHOOL ★
+  </textPath>
+</text>
+    </svg>
+
+    <!-- Photo -->
+    <img src="tp.jpg"
+      style="width:130px; height:130px; border-radius:50%; margin-top:25px; border:4px solid rgba(255,255,255,0.3);">
+
+  </div>
+
+  <!-- Name (VP style) -->
+  <div style="
+    display:inline-block;
+    margin-top:12px;
+    padding:6px 15px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.1);
+    color:#FFD700;
+    font-weight:bold;
+  ">
+    Vimlesh
+  </div>
+
+</div>
+        
+        
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-wrap">
+    <h2 class="section-title">Why Choose MIPS?</h2>
+    <p class="section-sub">Excellence in every aspect of education</p>
+    <div class="cards">
+      <div class="card"><div class="card-icon">📚</div><h3>CBSE Curriculum</h3><p>Affiliated CBSE curriculum with experienced and caring faculty.</p></div>
+      <div class="card"><div class="card-icon">🔬</div><h3>State-of-the-Art Labs</h3><p>Modern Science & Computer labs for practical learning.</p></div>
+      <div class="card"><div class="card-icon">🖥️</div><h3>Smart Classrooms</h3><p>Technology-enabled classrooms for interactive learning.</p></div>
+      <div class="card"><div class="card-icon">⚽</div><h3>Sports & Activities</h3><p>Comprehensive sports & co-curricular activities.</p></div>
+      <div class="card"><div class="card-icon">🛡️</div><h3>Safe Campus</h3><p>CCTV monitored safe & secure campus environment.</p></div>
+      <div class="card" onclick="showPage('admission',document.querySelectorAll('.nav-links button')[1])"><div class="card-icon">📋</div><h3>Online Admission</h3><p>Apply online for Nursery to Class X easily.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMISSION -->
+<div id="admission" class="page">
+  <div class="page-header"><h2>📋 Admission Form — 2026–27</h2><p>Classes: Nursery to Class X · Fill all fields carefully.</p></div>
+  <div class="form-wrap">
+    <div class="form-card">
+      <div class="sec-head">Section A — Student Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name *</label><input type="text" id="adm-fname" placeholder="e.g. Rahul"></div>
+        <div class="form-group"><label>Last Name *</label><input type="text" id="adm-lname" placeholder="e.g. Kumar"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date of Birth *</label><input type="date" id="adm-dob"></div>
+        <div class="form-group"><label>Gender *</label><select id="adm-gender"><option>— Select —</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+        <div class="form-group"><label>Applying for Class *</label>
+          <select id="adm-class"><option>— Select Class —</option><option>Nursery</option><option>LKG</option><option>UKG</option><option>Class I</option><option>Class II</option><option>Class III</option><option>Class IV</option><option>Class V</option><option>Class VI</option><option>Class VII</option><option>Class VIII</option><option>Class IX</option><option>Class X</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Previous School</label><input type="text" id="adm-prevschool" placeholder="If applicable"></div>
+        <div class="form-group"><label>% in Last Class</label><input type="text" id="adm-percent" placeholder="e.g. 85%"></div>
+        <div class="form-group"><label>Blood Group</label><select id="adm-blood"><option>— Select —</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+      </div>
+      <div class="sec-head">Section B — Parent Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>Father's Name *</label><input type="text" id="adm-father" placeholder="Full Name"></div>
+        <div class="form-group"><label>Mother's Name *</label><input type="text" id="adm-mother" placeholder="Full Name"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Contact Number *</label><input type="text" id="adm-phone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="form-group"><label>WhatsApp Number</label><input type="text" id="adm-wp" placeholder="+91 XXXXX XXXXX"></div>
+      </div>
+      <div class="sec-head">Section C — Address</div>
+      <div class="form-row">
+        <div class="form-group" style="flex:3"><label>Full Address *</label><textarea id="adm-address" placeholder="Village/Mohalla, Post, Block…"></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>District *</label><input type="text" id="adm-dist" placeholder="e.g. Madhubani" value="Madhubani"></div>
+        <div class="form-group"><label>PIN Code *</label><input type="text" id="adm-pin" placeholder="847421"></div>
+        <div class="form-group"><label>Transport?</label><select id="adm-transport"><option>No</option><option>Yes – School Bus</option><option>Yes – Van</option></select></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;">
+        <button class="btn-submit" onclick="submitAdmission()">Submit Application →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEES -->
+<div id="fees" class="page">
+  <div class="page-header"><h2>💰 Fee Structure — 2026–27</h2><p>Classes Nursery to X · Subject to revision.</p></div>
+  <div class="fee-wrap">
+    <div class="fee-card">
+      <div class="fee-filter">
+        <label>Filter:</label>
+        <select onchange="filterFees(this.value)">
+          <option value="all">All Classes</option><option value="pre">Pre-Primary</option>
+          <option value="pri">Primary (I–V)</option><option value="mid">Middle (VI–VIII)</option>
+          <option value="sec">Secondary (IX–X)</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="fee-table" id="feeTable">
+          <thead><tr><th>Class</th><th>Admission<span class="badge-o">One-Time</span></th><th>Tuition<span class="badge-a">Annual</span></th><th>Activity<span class="badge-a">Annual</span></th><th>Exam<span class="badge-a">Annual</span></th><th>Library<span class="badge-a">Annual</span></th><th>Transport*<span class="badge-a">Annual</span></th><th>Total</th></tr></thead>
+          <tbody>
+            <tr data-group="pre"><td><strong>Nursery</strong></td><td>₹4,000</td><td>₹20,000</td><td>₹3,000</td><td>₹700</td><td>₹500</td><td>₹6,000</td><td><strong>₹30,200</strong></td></tr>
+            <tr data-group="pre"><td><strong>LKG</strong></td><td>₹4,000</td><td>₹21,000</td><td>₹3,000</td><td>₹700</td><td>₹500</td><td>₹6,000</td><td><strong>₹31,200</strong></td></tr>
+            <tr data-group="pre"><td><strong>UKG</strong></td><td>₹4,000</td><td>₹22,000</td><td>₹3,200</td><td>₹700</td><td>₹600</td><td>₹6,000</td><td><strong>₹32,500</strong></td></tr>
+            <tr data-group="pri"><td><strong>Class I</strong></td><td>₹5,000</td><td>₹24,000</td><td>₹3,500</td><td>₹900</td><td>₹700</td><td>₹7,200</td><td><strong>₹36,300</strong></td></tr>
+            <tr data-group="pri"><td><strong>Class II</strong></td><td>₹5,000</td><td>₹24,500</td><td>₹3,500</td><td>₹900</td><td>₹700</td><td>₹7,200</td><td><strong>₹36,800</strong></td></tr>
+            <tr data-group="pri"><td><strong>Class III</strong></td><td>₹5,000</td><td>₹25,000</td><td>₹3,800</td><td>₹1,000</td><td>₹700</td><td>₹7,200</td><td><strong>₹37,700</strong></td></tr>
+            <tr data-group="pri"><td><strong>Class IV</strong></td><td>₹5,000</td><td>₹25,500</td><td>₹3,800</td><td>₹1,000</td><td>₹800</td><td>₹7,200</td><td><strong>₹38,300</strong></td></tr>
+            <tr data-group="pri"><td><strong>Class V</strong></td><td>₹5,000</td><td>₹26,000</td><td>₹4,000</td><td>₹1,000</td><td>₹800</td><td>₹7,200</td><td><strong>₹39,000</strong></td></tr>
+            <tr data-group="mid"><td><strong>Class VI</strong></td><td>₹6,000</td><td>₹30,000</td><td>₹4,500</td><td>₹1,200</td><td>₹900</td><td>₹8,400</td><td><strong>₹45,000</strong></td></tr>
+            <tr data-group="mid"><td><strong>Class VII</strong></td><td>₹6,000</td><td>₹31,000</td><td>₹4,500</td><td>₹1,200</td><td>₹900</td><td>₹8,400</td><td><strong>₹46,000</strong></td></tr>
+            <tr data-group="mid"><td><strong>Class VIII</strong></td><td>₹6,000</td><td>₹32,000</td><td>₹4,800</td><td>₹1,200</td><td>₹1,000</td><td>₹8,400</td><td><strong>₹47,400</strong></td></tr>
+            <tr data-group="sec"><td><strong>Class IX</strong></td><td>₹7,000</td><td>₹38,000</td><td>₹5,000</td><td>₹1,800</td><td>₹1,100</td><td>₹9,600</td><td><strong>₹55,500</strong></td></tr>
+            <tr data-group="sec"><td><strong>Class X</strong></td><td>₹7,000</td><td>₹40,000</td><td>₹5,000</td><td>₹2,200</td><td>₹1,100</td><td>₹9,600</td><td><strong>₹57,900</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:14px 18px;font-size:12px;color:var(--muted);border-top:1px solid #d0dff8;line-height:1.9;">* Transport optional · Admission fee one-time · Fees in 2 installments (April & October) · Late fee: ₹50/day · 📞 +91 7781933006</div>
+    </div>
+    <div style="text-align:center;margin-top:18px;"><button class="btn-primary" style="font-size:15px;padding:14px 34px;" onclick="showPage('payment',document.querySelectorAll('.nav-links button')[3])">Proceed to Pay →</button></div>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div id="payment" class="page">
+  <div class="page-header"><h2>💳 Online Fee Payment</h2><p>Secure · Encrypted · Instant Receipt</p></div>
+  <div class="pay-wrap">
+    <div class="pay-card">
+      <div class="pay-header"><h3>Fee Payment — MIPS</h3><p>Academic Year 2026–27 · Laukaha, Madhubani</p></div>
+      <div class="pay-body">
+        <div class="form-row">
+          <div class="form-group"><label>Student Name *</label><input type="text" placeholder="Full Name"></div>
+          <div class="form-group"><label>Class *</label>
+            <select id="pay-class" onchange="updateFeeAmount()">
+              <option value="">— Select —</option><option value="30200">Nursery</option><option value="31200">LKG</option><option value="32500">UKG</option>
+              <option value="36300">Class I</option><option value="36800">Class II</option><option value="37700">Class III</option><option value="38300">Class IV</option><option value="39000">Class V</option>
+              <option value="45000">Class VI</option><option value="46000">Class VII</option><option value="47400">Class VIII</option><option value="55500">Class IX</option><option value="57900">Class X</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Fee Type</label><select id="pay-type" onchange="updateFeeAmount()"><option value="1">Annual (Full)</option><option value="0.55">1st Installment (55%)</option><option value="0.45">2nd Installment (45%)</option></select></div>
+        </div>
+        <div class="pay-amount-box">
+          <div><div class="label">Amount Payable</div><div id="pay-note" style="font-size:11px;color:var(--muted);margin-top:2px;">Select class</div></div>
+          <div class="amount" id="pay-amount">₹ —</div>
+        </div>
+        <div class="pay-methods">
+          <div class="pay-method selected" onclick="selectMethod(this)"><span class="icon">📱</span>UPI</div>
+          <div class="pay-method" onclick="selectMethod(this)"><span class="icon">🏦</span>Net Banking</div>
+          <div class="pay-method" onclick="selectMethod(this)"><span class="icon">💳</span>Debit Card</div>
+          <div class="pay-method" onclick="selectMethod(this)"><span class="icon">💳</span>Credit Card</div>
+        </div>
+        <div id="upi-sec" class="form-row"><div class="form-group"><label>UPI ID</label><input type="text" placeholder="name@upi"></div></div>
+        <div class="form-row"><div class="form-group"><label>Parent Name *</label><input type="text" placeholder="As per bank account"></div><div class="form-group"><label>Contact *</label><input type="text" placeholder="+91 XXXXX XXXXX"></div></div>
+        <button class="btn-pay" onclick="showModal('pay-modal')">🔒 Pay Now Securely</button>
+        <div class="secure-badge">🔐 256-bit SSL · Receipt via SMS & WhatsApp</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GATE PASS -->
+<div id="gatepass" class="page">
+  <div class="page-header"><h2>🚪 Gate Pass / Leave</h2><p>Submit early pickup or leave request.</p></div>
+  <div class="gate-wrap">
+    <div class="gate-tabs">
+      <div class="gate-tab active" onclick="switchTab('new-pass',this)">➕ New Request</div>
+      <div class="gate-tab" onclick="switchTab('my-passes',this)">📋 My Passes</div>
+    </div>
+    <div id="new-pass" class="gate-panel active">
+      <div class="form-row">
+        <div class="form-group"><label>Student Name *</label><input type="text" id="gp-student" placeholder="Full Name"></div>
+        <div class="form-group"><label>Class & Section *</label><input type="text" id="gp-class" placeholder="e.g. VII-A"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Parent Name *</label><input type="text" id="gp-parent" placeholder="Full Name"></div>
+        <div class="form-group"><label>Contact *</label><input type="text" id="gp-phone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="form-group"><label>Relation</label><select id="gp-rel"><option>Father</option><option>Mother</option><option>Guardian</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Request Type *</label><select id="gp-type"><option>Early Pickup</option><option>Medical Leave</option><option>Family Emergency</option><option>Planned Leave</option><option>Half Day</option></select></div>
+        <div class="form-group"><label>Date *</label><input type="date" id="gp-date"></div>
+        <div class="form-group"><label>Pickup Time</label><input type="text" id="gp-time" placeholder="e.g. 11:30 AM"></div>
+      </div>
+      <div class="form-row"><div class="form-group" style="flex:3"><label>Reason *</label><textarea id="gp-reason" placeholder="Reason for leave…"></textarea></div></div>
+      <button class="btn-submit" onclick="submitGatePass()">Submit Gate Pass →</button>
+    </div>
+    <div id="my-passes" class="gate-panel">
+      <div class="pass-list" id="user-passes">
+        <div class="empty-state" style="padding:30px 0;"><div class="icon">🚪</div><p>Aapke koi gate pass nahi hain abhi.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK / TC -->
+<div id="feedback" class="page">
+  <div class="page-header"><h2>📝 Feedback & TC Request</h2><p>Share feedback · Request TC if leaving school.</p></div>
+  <div class="feedback-wrap">
+    <div class="tc-notice"><span>⚠️</span><p><strong>TC Notice:</strong> Selecting "Request TC" below starts the process. TC issued within 7 working days after dues clearance. <strong>Visit school once for final signature.</strong></p></div>
+    <div class="form-card">
+      <div class="sec-head">Section A — Details</div>
+      <div class="form-row">
+        <div class="form-group"><label>Parent Name *</label><input type="text" id="fb-parent" placeholder="Full Name"></div>
+        <div class="form-group"><label>Student Name *</label><input type="text" id="fb-student" placeholder="Full Name"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="max-width:160px;"><label>Class *</label><select id="fb-class"><option>— Select —</option><option>Nursery</option><option>LKG</option><option>UKG</option><option>Class I</option><option>Class II</option><option>Class III</option><option>Class IV</option><option>Class V</option><option>Class VI</option><option>Class VII</option><option>Class VIII</option><option>Class IX</option><option>Class X</option></select></div>
+        <div class="form-group"><label>Contact *</label><input type="text" id="fb-phone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="form-group" style="max-width:180px;"><label>Date</label><input type="date" id="fb-date"></div>
+      </div>
+      <div class="sec-head">Section B — Rating</div>
+      <table class="rating-table">
+        <thead><tr><th style="width:50%;">Parameter</th><th>Excellent (5)</th><th>Good (4)</th><th>Avg (3)</th><th>Below (2)</th><th>Poor (1)</th></tr></thead>
+        <tbody>
+          <tr><td>Quality of Teaching</td><td class="c"><input type="radio" name="f1" value="5"></td><td class="c"><input type="radio" name="f1" value="4"></td><td class="c"><input type="radio" name="f1" value="3"></td><td class="c"><input type="radio" name="f1" value="2"></td><td class="c"><input type="radio" name="f1" value="1"></td></tr>
+          <tr><td>School Environment</td><td class="c"><input type="radio" name="f2" value="5"></td><td class="c"><input type="radio" name="f2" value="4"></td><td class="c"><input type="radio" name="f2" value="3"></td><td class="c"><input type="radio" name="f2" value="2"></td><td class="c"><input type="radio" name="f2" value="1"></td></tr>
+          <tr><td>Safety & Security</td><td class="c"><input type="radio" name="f3" value="5"></td><td class="c"><input type="radio" name="f3" value="4"></td><td class="c"><input type="radio" name="f3" value="3"></td><td class="c"><input type="radio" name="f3" value="2"></td><td class="c"><input type="radio" name="f3" value="1"></td></tr>
+          <tr><td>Communication</td><td class="c"><input type="radio" name="f4" value="5"></td><td class="c"><input type="radio" name="f4" value="4"></td><td class="c"><input type="radio" name="f4" value="3"></td><td class="c"><input type="radio" name="f4" value="2"></td><td class="c"><input type="radio" name="f4" value="1"></td></tr>
+        </tbody>
+      </table>
+      <div class="sec-head">Section C — Comments</div>
+      <div class="form-row"><div class="form-group"><label>Appreciate most?</label><textarea id="fb-pos" placeholder="School ki achhi cheezein…"></textarea></div></div>
+      <div class="form-row"><div class="form-group"><label>Suggestions</label><textarea id="fb-neg" placeholder="Where can we improve…"></textarea></div></div>
+      <div class="form-row">
+        <div class="form-group"><label>Overall Rating</label><select id="fb-rating"><option>— Select —</option><option>⭐⭐⭐⭐⭐ Excellent</option><option>⭐⭐⭐⭐ Good</option><option>⭐⭐⭐ Average</option><option>⭐⭐ Below Average</option><option>⭐ Poor</option></select></div>
+        <div class="form-group"><label>Would you recommend MIPS?</label><select id="fb-recommend"><option>— Select —</option><option>Yes, Definitely</option><option>Yes, with reservations</option><option>Not Sure</option><option>No</option></select></div>
+      </div>
+      <div class="sec-head">Section D — TC Request</div>
+      <div class="form-row"><div class="form-group"><label>Request TC?</label><select id="tc-select" onchange="toggleTC()"><option value="no">No — Feedback only</option><option value="yes">Yes — Request TC</option></select></div></div>
+      <div id="tc-section" style="display:none;">
+        <div class="form-row">
+          <div class="form-group"><label>Reason for Leaving *</label><select id="tc-reason"><option>Relocation</option><option>Transfer to another school</option><option>Completion of Class X</option><option>Personal/Family reasons</option><option>Other</option></select></div>
+          <div class="form-group"><label>New School</label><input type="text" id="tc-newschool" placeholder="If applicable"></div>
+        </div>
+        <p style="font-size:12px;color:var(--red);font-weight:500;margin-bottom:10px;">⚠️ TC issued only after clearing all dues. SMS confirmation within 24 hrs.</p>
+      </div>
+      <div style="display:flex;justify-content:flex-end;"><button class="btn-submit" onclick="submitFeedback()">Submit →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Modern International Public School</strong> · CBSE Affiliated · Classes Nursery to X<br>
+  📞 <a href="tel:+917781933006">+91 7781933006</a> · 📍 Laukaha, Madhubani, Bihar — 847421<br>
+  <span style="font-size:11px;opacity:0.5;">© 2026–27 Modern International Public School. All rights reserved.</span>
+</div>
+</div><!-- /main-site -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="adm-modal"><div class="modal-box"><div class="modal-icon">🎓</div><h3>Application Submitted!</h3><p>Your admission application has been received. Our team will contact you within <strong>3–5 working days</strong>.</p><div class="modal-ref">Application ID: MIPS-2627-<span id="adm-ref"></span></div><button class="btn-close-modal" onclick="closeModal('adm-modal')">OK</button></div></div>
+<div class="modal-overlay" id="pay-modal"><div class="modal-box"><div class="modal-icon">✅</div><h3>Payment Successful!</h3><p>Fee payment processed. Receipt sent to your WhatsApp.</p><div class="modal-ref">Transaction ID: TXN-MIPS-<span id="pay-ref"></span></div><button class="btn-close-modal" onclick="closeModal('pay-modal')">OK</button></div></div>
+<div class="modal-overlay" id="gp-modal"><div class="modal-box"><div class="modal-icon">🚪</div><h3>Gate Pass Requested!</h3><p>Request submitted. School will approve shortly. SMS confirmation aayega.</p><div class="modal-ref">Pass ID: GP-MIPS-<span id="gp-ref"></span></div><button class="btn-close-modal" onclick="closeModal('gp-modal')">OK</button></div></div>
+<div class="modal-overlay" id="fb-modal"><div class="modal-box"><div class="modal-icon" id="fb-icon">📝</div><h3 id="fb-modal-title">Feedback Submitted!</h3><p id="fb-modal-msg">Thank you for your feedback!</p><div class="modal-ref">ID: FB-MIPS-<span id="fb-ref"></span></div><button class="btn-close-modal" onclick="closeModal('fb-modal')">Close</button></div></div>
+
+<!-- SMS TOAST -->
+<div class="sms-toast" id="smsToast">📱 SMS Sent to +91 7781933006</div>
+
+<script>
+// ── DATA STORE (localStorage) ──
+function getData(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ return []; } }
+function setData(key,val){ localStorage.setItem(key,JSON.stringify(val)); }
+function getUsers(){ try{ return JSON.parse(localStorage.getItem('mips_users')||'{}'); }catch(e){ return {}; } }
+function setUsers(u){ localStorage.setItem('mips_users',JSON.stringify(u)); }
+
+var currentUser = null;
+
+// ── LOGIN LOGIC ──
+function switchLoginTab(tab, el){
+  document.querySelectorAll('.login-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('parent-login').style.display = tab==='parent'?'block':'none';
+  document.getElementById('staff-login').style.display = tab==='staff'?'block':'none';
+}
+
+function showRegister(){ document.getElementById('parent-signin').style.display='none'; document.getElementById('parent-register').style.display='block'; }
+function showSignin(){ document.getElementById('parent-register').style.display='none'; document.getElementById('parent-signin').style.display='block'; }
+
+function registerParent(){
+  var name=document.getElementById('r-name').value.trim();
+  var phone=document.getElementById('r-phone').value.trim();
+  var pass=document.getElementById('r-pass').value.trim();
+  var student=document.getElementById('r-student').value.trim();
+  var err=document.getElementById('r-err');
+  if(!name||!phone||pass.length<6){ err.style.display='block'; return; }
+  var users=getUsers();
+  if(users[phone]){ err.textContent='❌ Yeh mobile already registered hai!'; err.style.display='block'; return; }
+  users[phone]={name,phone,pass,student};
+  setUsers(users);
+  err.style.display='none';
+  showSignin();
+  document.getElementById('p-phone').value=phone;
+  alert('✅ Account ban gaya! Ab login karein.');
+}
+
+function parentLogin(){
+  var phone=document.getElementById('p-phone').value.trim();
+  var pass=document.getElementById('p-pass').value.trim();
+  var err=document.getElementById('p-err');
+  var users=getUsers();
+  if(!users[phone]||users[phone].pass!==pass){ err.style.display='block'; return; }
+  err.style.display='none';
+  currentUser=users[phone];
+  launchMainSite();
+}
+
+function staffLogin(){
+  var user=document.getElementById('s-user').value.trim();
+  var pass=document.getElementById('s-pass').value.trim();
+  var err=document.getElementById('s-err');
+  if(user==='mips2005'&&pass==='847421'){
+    err.style.display='none';
+    document.getElementById('loginScreen').classList.remove('active');
+    document.getElementById('adminScreen').classList.add('active');
+    refreshAdminDashboard();
+  } else {
+    err.style.display='block';
+  }
+}
+
+function launchMainSite(){
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('mainSite').classList.add('active');
+  var initials=currentUser.name.charAt(0).toUpperCase();
+  document.getElementById('userIcon').textContent=initials;
+  document.getElementById('userName').textContent=currentUser.name.split(' ')[0];
+}
+
+function userLogout(){
+  currentUser=null;
+  document.getElementById('mainSite').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+}
+
+function adminLogout(){
+  document.getElementById('adminScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+}
+
+// ── NAVIGATION ──
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── SMS TOAST ──
+function showSMSToast(msg){
+  var t=document.getElementById('smsToast');
+  t.textContent='📱 '+msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+
+// ── ADMISSION SUBMIT ──
+function submitAdmission(){
+  var fname=document.getElementById('adm-fname').value.trim();
+  var lname=document.getElementById('adm-lname').value.trim();
+  var cls=document.getElementById('adm-class').value;
+  var father=document.getElementById('adm-father').value.trim();
+  var phone=document.getElementById('adm-phone').value.trim();
+  if(!fname||!lname||cls==='— Select Class —'||!father||!phone){
+    alert('⚠️ Kripya sabhi starred (*) fields fill karein.');return;
+  }
+  var now=new Date().toLocaleString('en-IN');
+  var ref=Math.floor(100000+Math.random()*900000);
+  var adms=getData('mips_admissions');
+  adms.push({
+    id:ref, fname, lname, cls, father,
+    mother:document.getElementById('adm-mother').value,
+    phone, wp:document.getElementById('adm-wp').value,
+    address:document.getElementById('adm-address').value,
+    transport:document.getElementById('adm-transport').value,
+    time:now, status:'New'
+  });
+  setData('mips_admissions',adms);
+  document.getElementById('adm-ref').textContent=ref;
+  showModal('adm-modal');
+  showSMSToast('Naya Admission: '+fname+' '+lname+' ('+cls+') - '+phone+' | MIPS 7781933006');
+  // clear form
+  ['adm-fname','adm-lname','adm-father','adm-mother','adm-phone','adm-wp','adm-address'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ── GATE PASS SUBMIT ──
+function submitGatePass(){
+  var student=document.getElementById('gp-student').value.trim();
+  var cls=document.getElementById('gp-class').value.trim();
+  var parent=document.getElementById('gp-parent').value.trim();
+  var phone=document.getElementById('gp-phone').value.trim();
+  if(!student||!cls||!parent||!phone){ alert('⚠️ Required fields fill karein.'); return; }
+  var now=new Date().toLocaleString('en-IN');
+  var ref=Math.floor(100000+Math.random()*900000);
+  var passes=getData('mips_gatepasses');
+  var entry={
+    id:ref, student, cls, parent, phone,
+    type:document.getElementById('gp-type').value,
+    date:document.getElementById('gp-date').value,
+    time:document.getElementById('gp-time').value,
+    reason:document.getElementById('gp-reason').value,
+    submittedAt:now, status:'Pending'
+  };
+  passes.push(entry);
+  setData('mips_gatepasses',passes);
+  // update user passes view
+  renderUserPasses();
+  document.getElementById('gp-ref').textContent=ref;
+  showModal('gp-modal');
+  showSMSToast('Gate Pass: '+student+' ('+cls+') - '+parent+' '+phone+' | MIPS');
+}
+
+function renderUserPasses(){
+  var passes=getData('mips_gatepasses');
+  var userPhone=currentUser?currentUser.phone:'';
+  var myPasses=passes.filter(p=>p.phone===userPhone||true).slice(-5).reverse();
+  var container=document.getElementById('user-passes');
+  if(!myPasses.length){ container.innerHTML='<div class="empty-state" style="padding:30px 0;"><div class="icon">🚪</div><p>Koi gate pass nahi.</p></div>'; return; }
+  container.innerHTML=myPasses.map(p=>`
+    <div class="pass-item">
+      <div class="pass-info"><h4>${p.student} — ${p.cls}</h4><p>${p.type} · ${p.date||'N/A'}</p></div>
+      <div class="pass-status">
+        <span class="status-badge ${p.status==='Pending'?'status-pending':p.status==='Cancelled'?'status-cancelled':'status-approved'}">${p.status==='Pending'?'⏳':p.status==='Cancelled'?'✗':'✓'} ${p.status}</span>
+        ${p.status==='Pending'?`<button class="btn-cancel" onclick="cancelMyPass(${p.id})">Cancel</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function cancelMyPass(id){
+  var passes=getData('mips_gatepasses');
+  var idx=passes.findIndex(p=>p.id===id);
+  if(idx>=0){ passes[idx].status='Cancelled'; setData('mips_gatepasses',passes); }
+  renderUserPasses();
+}
+
+// ── FEEDBACK SUBMIT ──
+function submitFeedback(){
+  var parent=document.getElementById('fb-parent').value.trim();
+  var student=document.getElementById('fb-student').value.trim();
+  var cls=document.getElementById('fb-class').value;
+  var phone=document.getElementById('fb-phone').value.trim();
+  if(!parent||!student||!phone){ alert('⚠️ Required fields fill karein.'); return; }
+  var now=new Date().toLocaleString('en-IN');
+  var ref=Math.floor(100000+Math.random()*900000);
+  var isTC=document.getElementById('tc-select').value==='yes';
+  var entry={
+    id:ref, parent, student, cls, phone,
+    rating:document.getElementById('fb-rating').value,
+    positive:document.getElementById('fb-pos').value,
+    suggestions:document.getElementById('fb-neg').value,
+    isTC, tcReason:isTC?document.getElementById('tc-reason').value:'',
+    time:now
+  };
+  if(isTC){
+    var tc=getData('mips_tc'); tc.push(entry); setData('mips_tc',tc);
+    showSMSToast('TC Request: '+student+' ('+cls+') - '+parent+' '+phone+' | MIPS');
+  } else {
+    var fb=getData('mips_feedback'); fb.push(entry); setData('mips_feedback',fb);
+    showSMSToast('Feedback: '+parent+' ('+student+', '+cls+') | MIPS');
+  }
+  var modal=document.getElementById('fb-modal');
+  document.getElementById('fb-icon').textContent=isTC?'📄':'📝';
+  document.getElementById('fb-modal-title').textContent=isTC?'TC Request Submitted!':'Feedback Submitted!';
+  document.getElementById('fb-modal-msg').textContent=isTC?'TC 7 working days mein ready hoga dues clearance ke baad. School visit karein signature ke liye.':'Aapka feedback receive hua. Shukriya!';
+  document.getElementById('fb-ref').textContent=ref;
+  modal.classList.add('show');
+}
+
+// ── ADMIN DASHBOARD ──
+function refreshAdminDashboard(){
+  var adms=getData('mips_admissions');
+  var tc=getData('mips_tc');
+  var gates=getData('mips_gatepasses');
+  var fb=getData('mips_feedback');
+  document.getElementById('stat-adm').textContent=adms.length;
+  document.getElementById('stat-tc').textContent=tc.length;
+  document.getElementById('stat-gate').textContent=gates.length;
+  document.getElementById('stat-fb').textContent=fb.length;
+
+  // Notifications
+  var all=[
+    ...adms.map(a=>({type:'adm',title:'📋 Naya Admission: '+a.fname+' '+a.lname,detail:'Class: '+a.cls+' | Parent: '+a.father+' | 📞 '+a.phone,time:a.time})),
+    ...tc.map(t=>({type:'tc',title:'📄 TC Request: '+t.student,detail:'Class: '+t.cls+' | Parent: '+t.parent+' | 📞 '+t.phone+' | Reason: '+t.tcReason,time:t.time})),
+    ...gates.map(g=>({type:'gate',title:'🚪 Gate Pass: '+g.student,detail:'Class: '+g.cls+' | '+g.type+' | Parent: '+g.parent+' | 📞 '+g.phone,time:g.submittedAt})),
+    ...fb.map(f=>({type:'feedback',title:'📝 Feedback: '+f.parent,detail:'Student: '+f.student+' ('+f.cls+') | Rating: '+f.rating+' | 📞 '+f.phone,time:f.time}))
+  ].sort((a,b)=>new Date(b.time)-new Date(a.time));
+
+  var notifDiv=document.getElementById('notif-list');
+  if(!all.length){notifDiv.innerHTML='<div class="empty-state"><div class="icon">🔔</div><p>Koi notification nahi abhi tak.</p></div>';return;}
+  notifDiv.innerHTML=all.map(n=>`<div class="notif-item ${n.type}"><div class="notif-info"><h4>${n.title}</h4><p>${n.detail}</p></div><div class="notif-time">${n.time}</div></div>`).join('');
+
+  // Tables
+  renderAdmTable(adms);
+  renderTCTable(tc);
+  renderGateTable(gates);
+  renderFbTable(fb);
+}
+
+function renderAdmTable(adms){
+  var tbody=document.getElementById('adm-tbody');
+  if(!adms.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Koi admission nahi.</td></tr>';return;}
+  tbody.innerHTML=adms.map((a,i)=>`<tr>
+    <td>${i+1}</td><td><strong>${a.fname} ${a.lname}</strong></td><td>${a.cls}</td>
+    <td>${a.father}</td><td>${a.phone}</td><td>${a.time}</td>
+    <td><span class="badge badge-new">New</span></td></tr>`).join('');
+}
+function renderTCTable(tc){
+  var tbody=document.getElementById('tc-tbody');
+  if(!tc.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Koi TC request nahi.</td></tr>';return;}
+  tbody.innerHTML=tc.map((t,i)=>`<tr><td>${i+1}</td><td><strong>${t.student}</strong></td><td>${t.cls}</td><td>${t.parent}</td><td>${t.phone}</td><td>${t.tcReason}</td><td>${t.time}</td></tr>`).join('');
+}
+function renderGateTable(gates){
+  var tbody=document.getElementById('gate-tbody');
+  if(!gates.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted);">Koi gate pass nahi.</td></tr>';return;}
+  tbody.innerHTML=gates.map((g,i)=>`<tr><td>${i+1}</td><td><strong>${g.student}</strong></td><td>${g.cls}</td><td>${g.parent}</td><td>${g.phone}</td><td>${g.type}</td><td>${g.date||'-'}</td><td><span class="badge ${g.status==='Pending'?'badge-pending':'badge-done'}">${g.status}</span></td></tr>`).join('');
+}
+function renderFbTable(fb){
+  var tbody=document.getElementById('fb-tbody');
+  if(!fb.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Koi feedback nahi.</td></tr>';return;}
+  tbody.innerHTML=fb.map((f,i)=>`<tr><td>${i+1}</td><td><strong>${f.parent}</strong></td><td>${f.student}</td><td>${f.cls}</td><td>${f.phone}</td><td>${f.rating||'-'}</td><td>${f.time}</td></tr>`).join('');
+}
+
+function switchAdminTab(id,el){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+  refreshAdminDashboard();
+}
+
+function filterTable(tbodyId, search){
+  var rows=document.getElementById(tbodyId).querySelectorAll('tr');
+  var s=search.toLowerCase();
+  rows.forEach(r=>{ r.style.display=r.textContent.toLowerCase().includes(s)?'':'none'; });
+}
+
+// ── MISC ──
+function filterFees(g){ document.querySelectorAll('#feeTable tbody tr').forEach(r=>{ r.style.display=(g==='all'||r.dataset.group===g)?'':'none'; }); }
+function updateFeeAmount(){ var cls=document.getElementById('pay-class'); var type=document.getElementById('pay-type'); if(!cls.value){document.getElementById('pay-amount').textContent='₹ —';return;} var final=Math.round(parseInt(cls.value)*parseFloat(type.value)); document.getElementById('pay-amount').textContent='₹ '+final.toLocaleString('en-IN'); document.getElementById('pay-note').textContent=type.options[type.selectedIndex].text; }
+function selectMethod(el){ document.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('selected')); el.classList.add('selected'); document.getElementById('upi-sec').style.display=el.textContent.includes('UPI')?'flex':'none'; }
+function switchTab(id,el){ document.querySelectorAll('.gate-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.gate-panel').forEach(p=>p.classList.remove('active')); el.classList.add('active'); document.getElementById(id).classList.add('active'); if(id==='my-passes')renderUserPasses(); }
+function toggleTC(){ document.getElementById('tc-section').style.display=document.getElementById('tc-select').value==='yes'?'block':'none'; }
+function showModal(id){ var refs={'adm-modal':'adm-ref','pay-modal':'pay-ref','gp-modal':'gp-ref'}; if(refs[id])document.getElementById(refs[id]).textContent=Math.floor(100000+Math.random()*900000); document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+</script>
+</body>
+</html>
