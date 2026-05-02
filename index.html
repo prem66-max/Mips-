@@ -5,6 +5,26 @@
   <meta name="description" content="Modern International Public School Laukaha, Madhubani ka official website. Yahan admission, faculty aur school details milegi.">
   <meta name="google-site-verification" content="1oYtzP6QmC6y_kOYNnE0TNQzo-YJMxwxfTOaP5hxDAg" />
 <meta charset="UTF-8">
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyBgzDgCksL3pGGS-oGj2hobPwya9YLolPk",
+  authDomain: "mips-school.firebaseapp.com",
+  projectId: "mips-school",
+  storageBucket: "mips-school.firebasestorage.app",
+  messagingSenderId: "928847304546",
+  appId: "1:928847304546:web:f40c66d0508287512dbe3b"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.db = db;
+window.fsCol = collection;
+window.fsAdd = addDoc;
+window.fsGet = getDocs;
+window.fsQuery = query;
+window.fsOrder = orderBy;
+  </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Modern International Public School</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -736,13 +756,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:#1a2340;}
 <div class="sms-toast" id="smsToast">📱 SMS Sent to +91 7781933006</div>
 
 <script>
-// ── DATA STORE (localStorage) ──
-function getData(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ return []; } }
-function setData(key,val){ localStorage.setItem(key,JSON.stringify(val)); }
-function getUsers(){ try{ return JSON.parse(localStorage.getItem('mips_users')||'{}'); }catch(e){ return {}; } }
-function setUsers(u){ localStorage.setItem('mips_users',JSON.stringify(u)); }
-
-var currentUser = null;
+// ── DATA STORE (Firebase Firestore) ──
+async function getData(key){
+  try{
+    var q=window.fsQuery(window.fsCol(window.db,key),window.fsOrder('time','desc'));
+    var snap=await window.fsGet(q);
+    return snap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){return[];}
+}
+async function setData(key,entry){
+  try{
+    await window.fsAdd(window.fsCol(window.db,key),entry);
+    return true;
+  }catch(e){return false;}
+}
+function getUsers(){try{return JSON.parse(localStorage.getItem('mips_users')||'{}');}catch(e){return{};}}
+function setUsers(u){localStorage.setItem('mips_users',JSON.stringify(u));}
 
 // ── LOGIN LOGIC ──
 function switchLoginTab(tab, el){
