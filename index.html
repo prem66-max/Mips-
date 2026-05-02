@@ -770,8 +770,21 @@ async function setData(key,entry){
     return true;
   }catch(e){return false;}
 }
-function getUsers(){try{return JSON.parse(localStorage.getItem('mips_users')||'{}');}catch(e){return{};}}
-function setUsers(u){localStorage.setItem('mips_users',JSON.stringify(u));}
+// ── USER ACCOUNTS — Ab Firebase mein save honge ──
+async function getUsers(){
+  try{
+    var snap=await window.fsGet(window.fsCol(window.db,'mips_users'));
+    var users={};
+    snap.docs.forEach(d=>{ users[d.data().phone]=d.data(); });
+    return users;
+  }catch(e){ return {}; }
+}
+async function setUsers(phone,userData){
+  try{
+    await window.fsAdd(window.fsCol(window.db,'mips_users'),userData);
+    return true;
+  }catch(e){ return false; }
+  }
 
 // ── LOGIN LOGIC ──
 function switchLoginTab(tab, el){
@@ -784,33 +797,36 @@ function switchLoginTab(tab, el){
 function showRegister(){ document.getElementById('parent-signin').style.display='none'; document.getElementById('parent-register').style.display='block'; }
 function showSignin(){ document.getElementById('parent-register').style.display='none'; document.getElementById('parent-signin').style.display='block'; }
 
-function registerParent(){
+async function registerParent(){
   var name=document.getElementById('r-name').value.trim();
   var phone=document.getElementById('r-phone').value.trim();
   var pass=document.getElementById('r-pass').value.trim();
   var student=document.getElementById('r-student').value.trim();
   var err=document.getElementById('r-err');
   if(!name||!phone||pass.length<6){ err.style.display='block'; return; }
-  var users=getUsers();
+  var users=await getUsers();
   if(users[phone]){ err.textContent='❌ Yeh mobile already registered hai!'; err.style.display='block'; return; }
-  users[phone]={name,phone,pass,student};
-  setUsers(users);
+  var userData={name,phone,pass,student,time:new Date().toLocaleString('en-IN')};
+  await setUsers(phone,userData);
   err.style.display='none';
   showSignin();
   document.getElementById('p-phone').value=phone;
   alert('✅ Account ban gaya! Ab login karein.');
-}
+  }
 
-function parentLogin(){
+async function parentLogin(){
   var phone=document.getElementById('p-phone').value.trim();
   var pass=document.getElementById('p-pass').value.trim();
   var err=document.getElementById('p-err');
-  var users=getUsers();
-  if(!users[phone]||users[phone].pass!==pass){ err.style.display='block'; return; }
   err.style.display='none';
+  var users=await getUsers();
+  if(!users[phone]||users[phone].pass!==pass){
+    err.style.display='block';
+    return;
+  }
   currentUser=users[phone];
   launchMainSite();
-}
+  }
 
 function staffLogin(){
   var user=document.getElementById('s-user').value.trim();
